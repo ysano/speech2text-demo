@@ -77,7 +77,7 @@ func main() {
 		results = formatString(results, w)
 		fmt.Printf("%sWord: %v%s\n", colorGreen, w, colorNone)
 		for i, v := range results {
-			fmt.Printf("%s%0d:%s %v\n", colorGreen, i, colorNone, v[0])
+			fmt.Printf("%s%0d:%s %v\n", colorGreen, i, colorNone, v)
 		}
 	}
 	return
@@ -165,7 +165,7 @@ func getTrans(stream speechpb.Speech_StreamingRecognizeClient, audioFile string)
 }
 
 // Full-text search with a single target word
-func parseSingle(str string, target string, neighbors int) [][]string {
+func parseSingle(str string, target string, neighbors int) []string {
 
 	// Add dummy space for edge case
 	dummy := strings.Repeat(` `, neighbors)
@@ -173,26 +173,24 @@ func parseSingle(str string, target string, neighbors int) [][]string {
 
 	// Find Target
 	rWithNeighbors := regexp.MustCompile(fmt.Sprintf(`.{%d}%v.{%d}`, neighbors, target, neighbors))
-	ret := rWithNeighbors.FindAllStringSubmatch(str, -1)
+	ret := rWithNeighbors.FindAllString(str, -1)
 
 	// Remove dummy
 	rDummy := regexp.MustCompile(`^\s+|\s+$`)
-	for _, v := range ret {
-		v[0] = rDummy.ReplaceAllString(v[0], "")
-		// log.Printf(v[0])
+	for i, v := range ret {
+		ret[i] = rDummy.ReplaceAllString(v, "")
 	}
 
 	return ret
 }
 
 // ANSI color
-func formatString(results [][]string, target string) [][]string {
+func formatString(results []string, target string) []string {
 
 	rTarget := regexp.MustCompile(target)
 
-	for _, v := range results {
-		v[0] = rTarget.ReplaceAllString(v[0], colorRed+"$0"+colorNone)
-		// log.Printf(v[0])
+	for i, v := range results {
+		results[i] = rTarget.ReplaceAllString(v, colorRed+"$0"+colorNone)
 	}
 	return results
 }

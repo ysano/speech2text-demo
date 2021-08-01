@@ -39,22 +39,22 @@ func TestParseSngle(t *testing.T) {
 	str := "私が先生と知り合いになったのは鎌倉かまくらである。その時私はまだ若々しい書生であった。暑中休暇を利用して海水浴に行った友達からぜひ来いという端書はがきを受け取ったので、私は多少の金を工面くめんして、出掛ける事にした。私は金の工面に二に、三日さんちを費やした。ところが私が鎌倉に着いて三日と経たたないうちに、私を呼び寄せた友達は、急に国元から帰れという電報を受け取った。電報には母が病気だからと断ってあったけれども友達はそれを信じなかった。友達はかねてから国元にいる親たちに勧すすまない結婚を強しいられていた。彼は現代の習慣からいうと結婚するにはあまり年が若過ぎた。それに肝心かんじんの当人が気に入らなかった。それで夏休みに当然帰るべきところを、わざと避けて東京の近くで遊んでいたのである。彼は電報を私に見せてどうしようと相談をした。私にはどうしていいか分らなかった。けれども実際彼の母が病気であるとすれば彼は固もとより帰るべきはずであった。それで彼はとうとう帰る事になった。せっかく来た私は一人取り残された。"
 
 	// middle case 1
-	if got, want := parseSingle(str, "鎌倉", 5)[0][0], "なったのは鎌倉かまくらで"; got != want {
+	if got, want := parseSingle(str, "鎌倉", 5)[0], "なったのは鎌倉かまくらで"; got != want {
 		t.Errorf("Text: got %q; want %q", got, want)
 	}
 
 	// middle case 2
-	if got, want := parseSingle(str, "鎌倉", 5)[1][0], "ころが私が鎌倉に着いて三"; got != want {
+	if got, want := parseSingle(str, "鎌倉", 5)[1], "ころが私が鎌倉に着いて三"; got != want {
 		t.Errorf("Text: got %q; want %q", got, want)
 	}
 
 	// edge case
-	if got, want := parseSingle(str, "私", 5)[0][0], "私が先生と知"; got != want {
+	if got, want := parseSingle(str, "私", 5)[0], "私が先生と知"; got != want {
 		t.Errorf("Text: got %q; want %q", got, want)
 	}
 
 	// partial case
-	if got, want := parseSingle(str, "先生", 5)[0][0], "私が先生と知り合い"; got != want {
+	if got, want := parseSingle(str, "先生", 5)[0], "私が先生と知り合い"; got != want {
 		t.Errorf("Text: got %q; want %q", got, want)
 	}
 }
