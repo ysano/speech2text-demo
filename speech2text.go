@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
+	"unicode/utf8"
 
 	speech "cloud.google.com/go/speech/apiv1"
 	speechpb "google.golang.org/genproto/googleapis/cloud/speech/v1"
@@ -73,11 +73,12 @@ func main() {
 
 	// Output result per word
 	for _, w := range words {
-		results := parseSingle(transcript, w, neighbors)
+		results, indices := parseSingle(transcript, w, neighbors)
 		results = formatString(results, w)
-		fmt.Printf("%sWord: %v%s\n", colorGreen, w, colorNone)
+		fmt.Printf("%sPos: Word <%v>%s\n", colorGreen, w, colorNone)
+
 		for i, v := range results {
-			fmt.Printf("%s%0d:%s %v\n", colorGreen, i, colorNone, v)
+			fmt.Printf("%s%03d:%s %v\n", colorGreen, indices[i], colorNone, v)
 		}
 	}
 	return
@@ -165,23 +166,23 @@ func getTrans(stream speechpb.Speech_StreamingRecognizeClient, audioFile string)
 }
 
 // Full-text search with a single target word
-func parseSingle(str string, target string, neighbors int) []string {
-
-	// Add dummy space for edge case
-	dummy := strings.Repeat(` `, neighbors)
-	str = dummy + str + dummy
+func parseSingle(str string, target string, neighbors int) ([]string, []int) {
 
 	// Find Target
-	rWithNeighbors := regexp.MustCompile(fmt.Sprintf(`.{%d}%v.{%d}`, neighbors, target, neighbors))
+	rWithNeighbors := regexp.MustCompile(
+		fmt.Sprintf(`.{0,%d}(%v).{0,%d}`, neighbors, target, neighbors))
 	ret := rWithNeighbors.FindAllString(str, -1)
 
-	// Remove dummy
-	rDummy := regexp.MustCompile(`^\s+|\s+$`)
-	for i, v := range ret {
-		ret[i] = rDummy.ReplaceAllString(v, "")
+	// Match indices
+	byteIndices := rWithNeighbors.FindAllStringSubmatchIndex(str, -1)
+	var runeIndices []int
+	for i, _ := range ret {
+		// Indices is bytecount, re-count with utf8 chars
+		// - indices[firstPos, lastPos, groupFirstPos, groupLastPos]
+		runeIndices = append(runeIndices, utf8.RuneCountInString(str[0:byteIndices[i][2]]))
 	}
 
-	return ret
+	return ret, runeIndices
 }
 
 // ANSI color
