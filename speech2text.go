@@ -59,7 +59,7 @@ func main() {
 	}
 
 	// Get Transcript
-	transcript := getTrans(stream, audioFile)
+	transcript := GetTrans(stream, audioFile)
 
 	// Output entire transcript
 	if len(words) == 0 {
@@ -84,7 +84,11 @@ func main() {
 	return
 }
 
-func getTrans(stream speechpb.Speech_StreamingRecognizeClient, audioFile string) string {
+type IGetTrans interface {
+	GetTrans(stream speechpb.Speech_StreamingRecognizeClient, audioFile string) string
+}
+
+func GetTrans(stream speechpb.Speech_StreamingRecognizeClient, audioFile string) string {
 
 	// Send configuration
 	// TODO: Support for formats other than 16kHz, 16bit

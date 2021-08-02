@@ -3,9 +3,41 @@ package main
 import (
 	speech "cloud.google.com/go/speech/apiv1"
 	"context"
+	"github.com/golang/mock/gomock"
+	"speech2text/mock_main"
 	"strings"
 	"testing"
 )
+
+func TestRecognizeLocal(t *testing.T) {
+
+	// Context
+	ctx := context.Background()
+
+	// Make Speech Client
+	client, err := speech.NewClient(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Make Stream
+	stream, err := client.StreamingRecognize(ctx)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	ctrl := gomock.NewController(t)
+	// Assert that Bar() is invoked.
+	defer ctrl.Finish()
+	m := mock_main.NewMockIGetTrans(ctrl)
+	m.
+		EXPECT().
+		GetTrans(stream, "./testdata/common_voice_ja_25371066.wav").
+		Return("ノートパソコンがない")
+
+	m.GetTrans(stream, "./testdata/common_voice_ja_25371066.wav")
+
+}
 
 func TestRecognize(t *testing.T) {
 
@@ -25,7 +57,7 @@ func TestRecognize(t *testing.T) {
 	}
 
 	// Test getTrans
-	str := getTrans(stream, "./testdata/common_voice_ja_25371066.wav")
+	str := GetTrans(stream, "./testdata/common_voice_ja_25371066.wav")
 	if str == "" {
 		t.Fatal("no response")
 	}
