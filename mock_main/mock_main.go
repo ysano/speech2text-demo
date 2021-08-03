@@ -34,16 +34,16 @@ func (m *MockIGetTrans) EXPECT() *MockIGetTransMockRecorder {
 	return m.recorder
 }
 
-// getTrans mocks base method.
-func (m *MockIGetTrans) getTrans(stream speech.Speech_StreamingRecognizeClient, audioFile string) string {
+// GetTrans mocks base method.
+func (m *MockIGetTrans) GetTrans(stream speech.Speech_StreamingRecognizeClient, audioFile string) string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "getTrans", stream, audioFile)
+	ret := m.ctrl.Call(m, "GetTrans", stream, audioFile)
 	ret0, _ := ret[0].(string)
 	return ret0
 }
 
-// getTrans indicates an expected call of getTrans.
-func (mr *MockIGetTransMockRecorder) getTrans(stream, audioFile interface{}) *gomock.Call {
+// GetTrans indicates an expected call of GetTrans.
+func (mr *MockIGetTransMockRecorder) GetTrans(stream, audioFile interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "getTrans", reflect.TypeOf((*MockIGetTrans)(nil).getTrans), stream, audioFile)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTrans", reflect.TypeOf((*MockIGetTrans)(nil).GetTrans), stream, audioFile)
 }
