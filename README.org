@@ -1,0 +1,35 @@
+#+OPTIONS: H:3 num:t toc:nil ^:nil tex:nil author:nil creator:nil timestamp:nil
+#+TITLE: speech to text demo
+* About
+
+  speech2text demo with Go and GCP
+
+* Files
+
+| file                   | 説明                 |
+|------------------------+----------------------|
+| mock_main/mock_main.go | テスト用 mock        |
+| testdata/*.wav         | 単体テスト用データ   |
+| voice/*.wav            | サンプル音声データ   |
+| secret/                | API Key 置き場(任意) |
+| go.mod                 | go module 情報       |
+| go.sum                 | go module 情報       |
+| README.org             | Readme(org)          |
+| speech2text.go         | 本プログラム         |
+| speech2text_test.go    | 単体テストプログラム |
+
+* Run
+  #+begin_src shell :results verbatim raw
+    export GOOGLE_APPLICATION_CREDENTIALS=secret/secret.json
+    go run speech2text.go voice/public_audio_ja-JP_Broadband-sample.wav 犬 認識 音声
+  #+end_src
+
+  #+begin_src text
+    Pos: Word <犬>
+    Pos: Word <認識>
+    002: 音声認識の現状につ
+    033: 近では音声認識でもディー
+    Pos: Word <音声>
+    000: 音声認識の現状
+    031: い最近では音声認識でもデ
+  #+end_src
